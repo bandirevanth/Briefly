@@ -1,0 +1,5 @@
+numpy
+pandas
+ollama
+sentence-transformers
+PyPDF2
