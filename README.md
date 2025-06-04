@@ -3,7 +3,7 @@
 ## Overview
 This project is a Python-based Retrieval-Augmented Generation (RAG) pipeline that intelligently summarizes `.pdf` and `.txt` documents using a lightweight sentence embedding model and a locally hosted LLM (`ollama`). It leverages semantic search over chunked document text to extract the most relevant context before querying the language model.
 
-## Features
+## ⚙ Features
 - ✅ Supports both `.txt` and `.pdf` inputs
 - ✅ Automatically filters out irrelevant sections like **References** or **Bibliography**
 - ✅ Splits large documents into context-friendly chunks
@@ -12,7 +12,7 @@ This project is a Python-based Retrieval-Augmented Generation (RAG) pipeline tha
 - ✅ Outputs concise, context-aware answers to a given question
 - ✅ Saves results as `.txt`
   
-## Tech Stack
+## 📚 Tech Stack
 - Python
 - SentenceTransformers
 - PyPDF2
