@@ -35,3 +35,7 @@ pip install -r requirements.txt
 ollama run gemma3:1b
 python pdf-summaizer.py
 ```
+
+---
+
+Don't forget to star me on GitHub and follow me! Thanks :)
