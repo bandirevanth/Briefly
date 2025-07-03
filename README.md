@@ -20,6 +20,13 @@ This project is a Python-based Retrieval-Augmented Generation (RAG) pipeline tha
 - NumPy
 - Pandas
 
+## RAG Pipeline
+1. text = read and clean input document
+2. chunks = split text into retrievable pieces
+3. chunk_embeddings = embed each chunk using SentenceTransformer
+4. context = retrieve top-k relevant chunks via cosine similarity to query
+5. answer = run LLM on prompt with query + context
+
 ## 🚀 How It Works
 1. **File Reading**  
 2. **Preprocessing**  
