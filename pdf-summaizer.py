@@ -7,6 +7,7 @@ import ollama
 from sentence_transformers import SentenceTransformer
 import PyPDF2
 
+# ---------------------------------------
 
 def read_file(file_path: Path) -> str:
     """
@@ -26,7 +27,7 @@ def read_file(file_path: Path) -> str:
     else:
         raise ValueError(f"Unsupported file type: {file_path.suffix}")
 
-
+# Break document into manageable text chunks for RAG
 def clean_text(text: str) -> str:
     """
     Remove sections like 'Bibliography' or 'References' if present.
@@ -34,7 +35,7 @@ def clean_text(text: str) -> str:
     match = re.search(r"(Bibliography|References)", text, re.IGNORECASE)
     return text[:match.start()] if match else text
 
-
+# Compute embeddings for all chunks
 def chunk_text(text: str, max_chunk_length: int = 2500) -> list:
     """
     Split text into smaller chunks; for RAG, shorter chunks are easier to retrieve.
@@ -52,26 +53,26 @@ def chunk_text(text: str, max_chunk_length: int = 2500) -> list:
         chunks.append(current_chunk.strip())
     return chunks
 
-
+"""
+This function retrieves the top k most relevant text chunks from a document by comparing their semantic similarity to a user query. 
+It uses a sentence embedding model to convert both the query and document chunks into high-dimensional vectors. 
+Then, it computes cosine similarity between the query vector and each chunk vector — which measures how aligned their meanings are. 
+The most similar (i.e., highest scoring) chunks are selected using np.argsort and returned as context for the summarizer.
+"""
 def embed_chunks(chunks: list, embedder) -> np.ndarray:
-    """
-    Compute embedding for each chunk.
-    """
+    # Compute embedding for each chunk.
     return np.array([embedder.encode(chunk) for chunk in chunks])
-
 
 def retrieve_relevant_chunks(query: str, chunks: list, chunk_embeddings: np.ndarray,
                               embedder, top_k: int = 3) -> list:
-    """
-    Retrieve top_k chunks that are most similar to the query.
-    """
+    # Retrieve top_k chunks that are most similar to the query.
     query_embedding = embedder.encode(query)
     norms = np.linalg.norm(chunk_embeddings, axis=1) * np.linalg.norm(query_embedding)
     similarities = np.dot(chunk_embeddings, query_embedding) / (norms + 1e-10)
     top_indices = np.argsort(similarities)[-top_k:][::-1]
     return [chunks[i] for i in top_indices]
 
-
+# RAG-style summarization pipeline using local Ollama
 def rag_summarize(document_text: str, query: str) -> str:
     """
     Given a document and a query, retrieve top relevant chunks and use them to prompt the LLM.
@@ -90,7 +91,7 @@ def rag_summarize(document_text: str, query: str) -> str:
     response = ollama.generate(model="gemma3:1b", prompt=prompt)
     return response.get("response", "").strip()
 
-
+# Run the full summarization pipeline for a given file
 def process_file(file_path: Path, output_folder: Path, query: str) -> tuple[str, str] or None:
     """
     Process a file using RAG: read the file, summarize it,
@@ -112,7 +113,7 @@ def process_file(file_path: Path, output_folder: Path, query: str) -> tuple[str,
         print(f"Error summarizing {file_path.name}: {e}")
         return None
 
-
+# Entry point for batch processing documents
 def main():
     input_folder = Path("input")
     output_folder = Path("output_rag")
